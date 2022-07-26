@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @Entity
 public class Cliente {
 
-    @NotNull(groups = ValidationGroups.ClienteId.class)
+
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

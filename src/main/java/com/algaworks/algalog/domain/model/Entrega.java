@@ -15,6 +15,8 @@ import javax.validation.groups.Default;
 import java.math.BigDecimal;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,28 +29,36 @@ public class Entrega {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Valid
-    @ConvertGroup(from = Default.class, to = ValidationGroups.ClienteId.class)
-    @NotNull
+
     @ManyToOne //muitas entregas possuem um cliente
     private Cliente cliente;
 
-    @Valid
-    @NotNull
+    @OneToMany(mappedBy = "entrega", cascade = CascadeType.ALL)
+    private List<Ocorrencia> ocorrencias = new ArrayList<>();
+
     @Embedded
     private Destinatario destinatario;
 
-    @NotNull
     private BigDecimal taxa;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusEntrega statusEntrega;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private OffsetDateTime dataPedido;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private OffsetDateTime dataFinalizacao;
+
+    public Ocorrencia adicionarOcorrencia(String descricao) {
+        Ocorrencia ocorrencia = new Ocorrencia();
+        ocorrencia.setDescricao(descricao);
+        ocorrencia.setDateRegistro(OffsetDateTime.now());
+        ocorrencia.setEntrega(this);
+
+        this.getOcorrencias().add(ocorrencia);
+        return ocorrencia;
+    }
 }
